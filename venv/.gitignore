@@ -1,0 +1,8 @@
+# created by virtualenv automatically
+Lib/
+Scripts/
+.idea/
+venv/
+token.txt
+token-YD.txt
+!.gitignore
