@@ -4,8 +4,11 @@ with open('token.txt', 'r') as file_object:
 import time
 import datetime
 import requests
-from tqdm import tqdm
+import json
 import os
+from pprint import pprint
+from tqdm import tqdm
+
 
 class VK_Photo:
         url = 'https://api.vk.com/method/'
@@ -60,6 +63,7 @@ class VK_Photo:
 
         def save_photo(self, id, al_id='profile'):
           filename_lib = []
+          sizes_photo = []
           res = self.photos_get(id, al_id)
           for photo in tqdm(res):
             sizes = photo['sizes']
@@ -69,12 +73,20 @@ class VK_Photo:
             if filename_lib.count(filename) > 1:
                 filename += ' likes ' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 self.download_photo(max_sizes_url,filename)
+                sizes_photo.append(dict(width=max(sizes, key=self.get_largest)['width'],
+                                        height=max(sizes, key=self.get_largest)['height'],
+                                        filename=filename + '.jpg'))
             else:
                 self.download_photo(max_sizes_url,filename)
+                sizes_photo.append(dict(width=max(sizes, key=self.get_largest)['width'],
+                                        height=max(sizes, key=self.get_largest)['height'],
+                                        filename=filename + '.jpg'))
+          pprint(sizes_photo)
 
 
 if __name__ == '__main__':
       vk_client = VK_Photo(token, '5.131')
+      # pprint(vk_client.photos_get(10538884))
       vk_client.save_photo(10538884)
 
 
@@ -117,6 +129,6 @@ class YaUploader:
                 print(f'Папка {name_folder} есть на Я.Диске.')
 
 
-if __name__ == '__main__':
-    uploader = YaUploader(tokenYD)
-    result = uploader.uploads_files()
+# if __name__ == '__main__':
+    # uploader = YaUploader(tokenYD)
+    # result = uploader.uploads_files()
