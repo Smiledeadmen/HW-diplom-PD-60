@@ -136,10 +136,18 @@ class YaUploader:
         res = requests.get(f'{self.url}?path={name_folder}', headers=self.headers).json()
         try:
             if res['error'] == 'DiskNotFoundError':
-                print(f'Папки {name_folder} нет на Я.Диске. Создаём.')
-                requests.put(f'{self.url}?path={name_folder}', headers=self.headers).json()
+                req = requests.put(f'{self.url}?path={name_folder}', headers=self.headers).json()
+                return f'Папки {name_folder} нет на Я.Диске. Создаём.'
         except KeyError:
-            print(f'Папка {name_folder} есть на Я.Диске.')
+            return f'Папка {name_folder} есть на Я.Диске.'
+
+    def del_folder(self, name_folder):
+        '''
+        Функция удаление папки на Я.Диске.
+        '''
+        res = requests.delete(f'{self.url}?path={name_folder}', headers=self.headers)
+        return res
+
 
 
 if __name__ == '__main__':
